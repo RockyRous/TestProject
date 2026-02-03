@@ -1,6 +1,6 @@
 import csv
 import logging
-from app.llm import user_to_sql, rows_to_answer
+from app.llm import user_to_sql, rows_to_answer, get_routing, get_free_answer
 from app.db import execute_query
 
 logging.basicConfig(level=logging.INFO)
@@ -13,6 +13,15 @@ TEST_QUESTIONS = [
     "Что входит в комплектацию модели DK-1416?",
     "Сравните мощность моделей темно-серого цвета",
     "Какая сегодня погода?",  # Вопрос не по теме
+    "Привет",
+    "что лучше 2200 или 2400",
+    "Что такое sanders?",
+    "Какие есть модели?",
+    "Что лучше DK-2400 или DK-2200",
+    "Какая модель подойдет на большую семью?",
+    "Как называется 1416",
+    "Кто ты?",
+    "С чем ты работаешь?",
 ]
 
 OUTPUT_CSV = "test_results.csv"
@@ -26,6 +35,7 @@ def run_tests():
 
         result = {
             "question": question,
+            "routing": "",
             "generated_sql": "",
             "sql_result": "",
             "answer": "",
@@ -33,13 +43,20 @@ def run_tests():
         }
 
         try:
-            sql = user_to_sql(question)
-            result["generated_sql"] = sql
+            routing = get_routing(question)
+            result["routing"] = routing
 
-            rows = execute_query(sql)
-            result["sql_result"] = rows
-
-            answer = rows_to_answer(question, rows, sql)
+            if routing == "SQL":
+                # Генерация SQL
+                sql = user_to_sql(question)
+                result["generated_sql"] = sql
+                # Выполнение запроса к БД
+                rows = execute_query(sql)
+                result["sql_result"] = rows
+                # Формирование ответа
+                answer = rows_to_answer(question, rows, sql)
+            else:  # routing == "FREE"
+                answer = get_free_answer(question)
             result["answer"] = answer
 
         except Exception as e:
@@ -57,6 +74,7 @@ def write_results(results):
             f,
             fieldnames=[
                 "question",
+                "routing",
                 "generated_sql",
                 "sql_result",
                 "answer",

@@ -36,7 +36,7 @@ def execute_query(sql: str, params: tuple = ()):
         dict_rows = [dict(zip(columns, row)) for row in rows] if columns else []
 
         logger.info(f"Query returned {len(dict_rows)} rows")
-        logger.debug(f"Rows: {dict_rows}")
+        logger.info(f"Rows: {dict_rows}")
 
         return dict_rows
     except Exception:

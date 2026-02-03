@@ -4,15 +4,23 @@ from dotenv import load_dotenv
 load_dotenv()
 
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4.1-mini")
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
-DB_PATH = "data/products.db"
 
 # LLM
 LLM_MAX_RETRIES = 3
 LLM_RETRY_DELAY = 2
 
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+OPENAI_MODEL_ROUTING = os.getenv("OPENAI_MODEL_ROUTING", "gpt-4.1-mini")
+OPENAI_MODEL_SQL_BUILDER = os.getenv("OPENAI_MODEL_SQL_BUILDER", "gpt-4.1-mini")
+OPENAI_MODEL_ANSWER = os.getenv("OPENAI_MODEL_ANSWER", "gpt-4.1-mini")
+OPENAI_MODEL_FREE = os.getenv("OPENAI_MODEL_FREE", "gpt-4.1-mini")
+TEMPERATURE_ROUTING = float(os.getenv("TEMPERATURE_ROUTING", 0))
+TEMPERATURE_SQL_BUILDER = float(os.getenv("TEMPERATURE_SQL_BUILDER", 0))
+TEMPERATURE_ANSWER = float(os.getenv("TEMPERATURE_ANSWER", 0.2))
+TEMPERATURE_FREE = float(os.getenv("TEMPERATURE_FREE", 0.5))
+
 # DB
 DB_MAX_RETRIES = 3
 DB_RETRY_DELAY = 1
+DB_PATH = "data/products.db"
